@@ -11,17 +11,22 @@ public class PlayerController : MonoBehaviour {
     private Animator anim;
     private Rigidbody rb;
     private AudioSource audioSource;
+    private Vector3 posicaoInicial;
+    private Quaternion rotacaoInicial;
+
 
     private bool pulando = false;
 
 	void Start () {
+        posicaoInicial = transform.localPosition;
+        rotacaoInicial = transform.localRotation;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
     }
 	
 	void Update () {
-        if (GameController.instancia.estado == Estado.Jogando || GameController.instancia.estado == Estado.AguardoComecar)
+        if (GameController.instancia.estado == Estado.Jogando)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -29,10 +34,7 @@ public class PlayerController : MonoBehaviour {
                 audioSource.PlayOneShot(somPulo);
                 rb.useGravity = true;
                 pulando = true;
-                if (GameController.instancia.estado == Estado.AguardoComecar)
-                {
-                    GameController.instancia.PlayerComecou();
-                }
+                
             }
         }
 	}
@@ -63,5 +65,15 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
+
+    public void recomecar()
+    {
+        rb.useGravity = false;
+        rb.velocity = Vector3.zero;
+        rb.detectCollisions = true;
+        transform.localPosition = posicaoInicial;
+        transform.localRotation = rotacaoInicial;
+    }
+
 
 }
