@@ -10,6 +10,10 @@ public class morcegoMove : MonoBehaviour
     public float min;
     public float max;
     public float espera;
+
+    private GameObject player;
+    private bool pontuou = false;
+
     void Start()
     {
         StartCoroutine(Move(max));
@@ -20,7 +24,7 @@ public class morcegoMove : MonoBehaviour
         {
             Vector3 direcao = (destino == max) ? Vector3.up : Vector3.down;
             Vector3 velocidadeVetorial = direcao * velocidadev;
-            transform.localPosition = transform.localPosition + velocidadeVetorial * Time.deltaTime;
+            transform.position = transform.position + velocidadeVetorial * Time.deltaTime;
             yield return null;
         }
 
@@ -30,9 +34,23 @@ public class morcegoMove : MonoBehaviour
         StartCoroutine(Move(destino));
     }
 
+    private void Awake()
+    {
+        player = GameObject.Find("Player");
+    }
+
     void Update()
     {
-        Vector3 velocidadeVetorialv = Vector3.left * velocidadeh;
-        transform.localPosition = transform.localPosition + velocidadeVetorialv * Time.deltaTime;
+        Vector3 velocidadeVetorial = Vector3.left * velocidadeh;
+        transform.position = transform.position + velocidadeVetorial * Time.deltaTime;
+        if (!pontuou && GameController.instancia.estado == Estado.Jogando)
+        {
+            if (transform.position.x < player.transform.position.x)
+            {
+                GameController.instancia.incrementarPontos(1);
+                pontuou = true;
+            }
+        }
     }
+
 }
